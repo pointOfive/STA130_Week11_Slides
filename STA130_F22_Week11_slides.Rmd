@@ -112,6 +112,50 @@ download.file(url = "https://laughingsquid.com/wp-content/uploads/cat-decision.j
 ::::
 :::
 
+## Statistics and Data Science 
+
+:::columns
+::::column
+
+### Statistics: Inference
+
+- Hypothesis Testing
+- Estimation (Confidence Intervals)
+
+::::
+::::column
+
+### Data Science: Machine Learning
+
+
+- Prediction
+
+  - Regression $\quad\bullet$ Classification
+
+::::
+:::
+
+\vspace{.25cm}
+- Hypothesis Testing and Estimation are both aspects of 
+
+  \vspace{-.25cm}
+  Simple Linear and Multivariate Regression
+
+  \vspace{-.1cm}
+  - The same is true for a related Classification method called Logistic Regression
+
+\vspace{.25cm}
+- Our Machine Learning (ML) focus is on the Decision Tree Classification
+
+  - but there are many other ML Classification methods
+  
+    \vspace{-.25cm}
+    and also many ML Regression methods beyond 
+  
+    \vspace{-.25cm}
+    Simple Linear and Multivariate Regression models from Statistics
+
+
 ## Trouble Sleeping?
 
 ```{r, size="footnotesize"}
