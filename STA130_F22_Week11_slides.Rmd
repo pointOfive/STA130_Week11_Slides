@@ -183,7 +183,7 @@ plot(as.party(tree), gp=gpar(cex=1), type="simple")
 Very similar to\hspace{1.75in}Data is "recursively partitioned" --
 
 \vspace{-.2cm}
-Linear Regression?$\;$\hspace{1.45in}divided into smaller and smaller subsets...
+the `lm` function?$\;$\hspace{1.45in}divided into smaller and smaller subsets...
 
 
 ## Geometric Interpretation
@@ -235,6 +235,24 @@ $\;$\hspace{2.5in}What are child/parent, leaf/terminal nodes?
 $\;$\hspace{2.5in}What are the decision rules and where are they?
 
 
+## How do you use a decision tree?
+
+\vspace{.25cm}
+
+```{r, size="small", , fig.width=8, fig.height=3}
+plot(as.party(tree), gp=gpar(cex=1), type="simple")
+```
+
+\vspace{-.5cm}
+
+**Does someone have trouble sleeping if** 
+
+\vspace{-.25cm}
+
+- they typically gets 5.2 hours of sleep on weeknights **?** (***and***)
+- report having 4 days of poor physical health over the past month **?**
+
+
 ## What kind of things could be different here?
 
 \vspace{.25cm}
@@ -245,12 +263,14 @@ plot(as.party(tree), gp=gpar(cex=1), type="simple")
 
 \vspace{-.5cm}
 
-**Does someone have having trouble sleeping if** 
+**Does someone have trouble sleeping if** 
 
 \vspace{-.25cm}
 
-- they typically gets 5.2 hours of sleep on weeknights
+- they typically gets 5.2 hours of sleep on weeknights **?** (***and***)
 - report having 4 days of poor physical health over the past month **?**
+
+
 
 ## What kind of things could be different here?
 
@@ -297,14 +317,14 @@ tibble(level_text = categorical,
 
    - Each **variable** and **decision rule** creates two new child nodes
 
-2. All **variable** and **decision rule** violating **stopping rule** are discarded
+2. All **variable** and **decision rule** violating **stopping rules** are discarded
 
    - node must be large enough to split, resulting nodes must be large enough
    - maximum tree depth, and maximum node count must not be exceeded
 
 3. Of those remaining, the **variable** and **decision rule** producing the lowest *entropy*/*gini impurity* nodes is selected (for possible addition into the tree)
 
-   $\bullet\;\text{entroy}(p) = - p \log(p) - (1 - p) \log(1-p) \quad \bullet\;\text{gini}(p) = 1 - p^2 - (1 - p)^2$ 
+   $\bullet\;\text{entropy}(p) = - p \log(p) - (1 - p) \log(1-p) \quad \bullet\;\text{gini}(p) = 1 - p^2 - (1 - p)^2$ 
 
    \vspace{-.2cm}   
    
@@ -319,16 +339,51 @@ tibble(level_text = categorical,
       \vspace{-.2cm}   
       [$\text{Error}(T) + \texttt{cp} \times \text{splits} \times \text{Error}(T_0)$](https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf) must improve  ($T_0$ is the no splits tree) 
 
+## Model complexity
+
+Why are we so careful with deciding if a split should be added to a decision tree?
+
+### Why don't we just grow the tree as big as possible?
+
+```{r, eval=FALSE, include=FALSE}
+download.file(url = "https://dl.acm.org/cms/attachment/ea56c06f-f79a-4c65-8ef5-2df2d268b5a4/image6.png",
+              destfile = "images/complexity.png", mode = 'wb')
+```
+
+:::columns
+::::column
+
+\includegraphics[width=\textwidth]{images/complexity.png}
+
+::::
+::::column
+
+\vspace{.25in}
+
+Decision trees too easily 
+
+***overfit*** the data...
+
+\vspace{.25in}
+
+``If *this* and *this* and *this* and *this* and ... are *true*, then conclude *this*...'' 
+
+::::
+:::
+
+### At some point we're just ***memorizing*** the data...
+
+
 
 
 ## How are decision trees evaluated?
 
-The outcome/response $y_i$ (and hence $\hat y$) is re-coded as $0$ (negative) or $1$ (positive)
+The outcome/response $y_i$ (and hence $\hat y_i$) is re-coded as $0$ (negative) or $1$ (positive)
 
 \vspace{-.2cm}
 
-- $\hat y$ either *predicts* or *does not predict* the positive event
-- $\hat y$ for "Do you have sleep trouble? Yes or No?" is $1$ if "Yes" is predicted
+- $\hat y_i$ either *predicts* or *does not predict* the positive event
+- $\hat y_i$ for "Do you have sleep trouble? Yes or No?" is $1$ if "Yes" is predicted
 
 \vspace{.1cm}
 
@@ -350,12 +405,12 @@ What do the expressions mean? $\sum_{i=1}^n y_i$, $\sum_{i=1}^n (1- y_i)$, $\sum
 
 ## How are decision trees evaluated?
 
-The outcome/response $y_i$ (and hence $\hat y$) is re-coded as $0$ (negative) or $1$ (positive)
+The outcome/response $y_i$ (and hence $\hat y_i$) is re-coded as $0$ (negative) or $1$ (positive)
 
 \vspace{-.2cm}
 
-- $\hat y$ either *predicts* or *does not predict* the positive event
-- $\hat y$ for "Do you have sleep trouble? Yes or No?" is $1$ if "Yes" is predicted
+- $\hat y_i$ either *predicts* or *does not predict* the positive event
+- $\hat y_i$ for "Do you have sleep trouble? Yes or No?" is $1$ if "Yes" is predicted
 
 \vspace{.1cm}
 
@@ -367,11 +422,11 @@ The outcome/response $y_i$ (and hence $\hat y$) is re-coded as $0$ (negative) or
 | | $y_i=0$ | $y_i=1$ | 
 |-|-|-|
 | $\hat y_i=0$ | $n_{\text{TN}}$ | $n_{\text{FN}}$ |
-| $\hat y_i=1$ | $n_{\text{FP}}$ | $n_{\text{FN}}$ |
+| $\hat y_i=1$ | $n_{\text{FP}}$ | $n_{\text{TP}}$ |
 
 | |
 |-|
-| $n = n_{\text{TN}} + n_{\text{FN}} + n_{\text{FP}} + n_{\text{FN}}$ |
+| $n = n_{\text{TN}} + n_{\text{FN}} + n_{\text{FP}} + n_{\text{TP}}$ |
 
 ::::
 ::::column
@@ -395,8 +450,8 @@ The outcome/response $y_i$ (and hence $\hat y$) is re-coded as $0$ (negative) or
 
 \vspace{-.2cm}
 
-- $\hat y$ either *predicts* or *does not predict* the positive event
-- $\hat y$ for "Do you have sleep trouble? Yes or No?" is $1$ if "Yes" is predicted
+- $\hat y_i$ either *predicts* or *does not predict* the positive event
+- $\hat y_i$ for "Do you have sleep trouble? Yes or No?" is $1$ if "Yes" is predicted
 
 \vspace{.1cm}
 
@@ -408,11 +463,11 @@ The outcome/response $y_i$ (and hence $\hat y$) is re-coded as $0$ (negative) or
 | | $y_i=0$ | $y_i=1$ | 
 |-|-|-|
 | $\hat y_i=0$ | $n_{\text{TN}}$ | $n_{\text{FN}}$ |
-| $\hat y_i=1$ | $n_{\text{FP}}$ | $n_{\text{FN}}$ |
+| $\hat y_i=1$ | $n_{\text{FP}}$ | $n_{\text{TP}}$ |
 
 | |
 |-|
-| $n = n_{\text{TN}} + n_{\text{FN}} + n_{\text{FP}} + n_{\text{FN}}$ |
+| $n = n_{\text{TN}} + n_{\text{FN}} + n_{\text{FP}} + n_{\text{TP}}$ |
 
 ::::
 ::::column
@@ -516,17 +571,21 @@ This depends on the costs and benefits of the intervention/failure to intervene
 
 ## What's Worse? FN or FP?
 
+\vspace{.25in}
 
 - **Sensitivity/Recall** is also called the **True Positive Rate (TPR)**
   - The **FALSE Positive Rate (FPR)** is 1-TPR
   
     FPR tells you the proportion of positives that are missed
 
+\vspace{.25in}
 
-- **Specificity** is also called the **True Negative Rate (TPR)**
+- **Specificity** is also called the **True Negative Rate (TNR)**
   - The **FALSE Negative Rate (FNR)** is 1-TNR
 
     FNR tells you the proportion of negatives that are missed
+
+\vspace{.25in}
 
 \color{gray}
 For more information see: https://en.wikipedia.org/wiki/Confusion_matrix#Example
@@ -596,7 +655,7 @@ doesn't work well for the remaing 20\% of the data, which could happen if}
 \small 
 
 \begin{itemize}
-\item The subsample aren't "representative" to begin with
+\item The subsamples aren't 'representative' to start with
 \item The model is overly specific to 80\% of the data
 \end{itemize}
 
@@ -703,11 +762,12 @@ plot(type="extended",#gp=gpar(cex=0.8),
 ```{r, size="footnotesize"}
 tree_train_pred <- predict(
   tree, type="class") 
-train_conf_mtrx <- table(
+train_confusion_matrix <- table(
   `y-hat`=tree_train_pred, 
  ` observed y`=train$SleepTrouble)
-train_conf_mtrx
-train_conf_mtrx/sum(train_conf_mtrx)
+train_confusion_matrix
+train_confusion_matrix/sum(
+                train_confusion_matrix)
 ```
 
 ::::
@@ -716,11 +776,12 @@ train_conf_mtrx/sum(train_conf_mtrx)
 ```{r, size="footnotesize"}
 tree_test_pred <- predict(
   tree, type="class", newdata=test)
-test_conf_mtrx <- table(
+test_confusion_matrix <- table(
   `y-hat`=tree_test_pred, 
  ` observed y`=test$SleepTrouble)
-test_conf_mtrx
-test_conf_mtrx/sum(test_conf_mtrx)
+test_confusion_matrix
+test_confusion_matrix/sum(
+               test_confusion_matrix)
 ```
 
 ::::
@@ -732,12 +793,12 @@ test_conf_mtrx/sum(test_conf_mtrx)
 ::::column
 
 ```{r, size="footnotesize"}
-n_TN <- train_conf_mtrx[1,1]
-n_FN <- train_conf_mtrx[1,2]
-n_FP <- train_conf_mtrx[2,1]
-n_TP <- train_conf_mtrx[2,2]
+n_TN <- train_confusion_matrix[1,1]
+n_FN <- train_confusion_matrix[1,2]
+n_FP <- train_confusion_matrix[2,1]
+n_TP <- train_confusion_matrix[2,2]
 # accuracy
-(n_TP+n_TN)/sum(train_conf_mtrx)
+(n_TP+n_TN)/sum(train_confusion_matrix)
 # precision
 (n_TP)/(n_TP+n_FP)
 # sensitivity/recall: TPR = 1-FPR
@@ -750,12 +811,12 @@ n_TP <- train_conf_mtrx[2,2]
 ::::column
 
 ```{r, size="footnotesize"}
-n_TN <- test_conf_mtrx[1,1]
-n_FN <- test_conf_mtrx[1,2]
-n_FP <- test_conf_mtrx[2,1]
-n_TP <- test_conf_mtrx[2,2]
+n_TN <- test_confusion_matrix[1,1]
+n_FN <- test_confusion_matrix[1,2]
+n_FP <- test_confusion_matrix[2,1]
+n_TP <- test_confusion_matrix[2,2]
 # accuracy
-(n_TP+n_TN)/sum(test_conf_mtrx)
+(n_TP+n_TN)/sum(test_confusion_matrix)
 # precision
 (n_TP)/(n_TP+n_FP)
 # sensitivity/recall: TPR = 1-FPR
@@ -808,32 +869,32 @@ tree2 %>% as.party() %>% plot(type="simple",
 ::::column
 
 ```{r, size="footnotesize"}
-tree1_test_pred <- 
-  predict(tree1, type="class", 
-          newdata=test)
-tree1_test_confmtrx <- 
+tree1_test_pred <- predict(tree1,
+                           type="class", 
+                           newdata=test)
+tree1_test_confusion_matrix <- 
   table(`y-hat`=tree1_test_pred, 
        ` observed y`=test$SleepTrouble)
-tree1_test_confmtrx
+n <- sum(tree1_test_confusion_matrix)
+tree1_test_confusion_matrix
 # accuracy
-n <- sum(tree1_test_confmtrx)
-sum(diag(tree1_test_confmtrx))/n
+sum(diag(tree1_test_confusion_matrix))/n
 ```
 
 ::::
 ::::column
 
 ```{r, size="footnotesize"}
-tree2_test_pred <- 
-  predict(tree2, type="class", 
-          newdata=test)
-tree2_test_confmtrx <- 
+tree2_test_pred <- predict(tree2,
+                           type="class", 
+                           newdata=test)
+tree2_test_confusion_matrix <- 
   table(`y-hat`=tree2_test_pred, 
        ` observed y`=test$SleepTrouble)
-tree2_test_confmtrx
+n <- sum(tree2_test_confusion_matrix)
+tree2_test_confusion_matrix
 # accuracy
-n <- sum(tree2_test_confmtrx)
-sum(diag(tree2_test_confmtrx))/n
+sum(diag(tree2_test_confusion_matrix))/n
 ```
 
 ::::
@@ -848,32 +909,32 @@ sum(diag(tree2_test_confmtrx))/n
 ::::column
 
 ```{r, size="footnotesize"}
-tree1_test_pred <- 
-  predict(tree1, type="class", 
-          newdata=test)
-tree1_test_confmtrx <- 
+tree1_test_pred <- predict(tree1,
+                           type="class", 
+                           newdata=test)
+tree1_test_confusion_matrix <- 
   table(`y-hat`=tree1_test_pred, 
        ` observed y`=test$SleepTrouble)
-tree1_test_confmtrx/sum(tree1_test_confmtrx)
+n <- sum(tree1_test_confusion_matrix)
+tree1_test_confusion_matrix/n
 # accuracy
-n <- sum(tree1_test_confmtrx)
-sum(diag(tree1_test_confmtrx))/n
+sum(diag(tree1_test_confusion_matrix))/n
 ```
 
 ::::
 ::::column
 
 ```{r, size="footnotesize"}
-tree2_test_pred <- 
-  predict(tree2, type="class", 
-          newdata=test)
-tree2_test_confmtrx <- 
+tree2_test_pred <- predict(tree2,
+                           type="class", 
+                           newdata=test)
+tree2_test_confusion_matrix <- 
   table(`y-hat`=tree2_test_pred, 
        ` observed y`=test$SleepTrouble)
-tree2_test_confmtrx/sum(tree2_test_confmtrx)
+n <- sum(tree2_test_confusion_matrix)
+tree2_test_confusion_matrix/n
 # accuracy
-n <- sum(tree2_test_confmtrx)
-sum(diag(tree2_test_confmtrx))/n
+sum(diag(tree2_test_confusion_matrix))/n
 ```
 
 ::::
@@ -885,12 +946,12 @@ sum(diag(tree2_test_confmtrx))/n
 ::::column
 
 ```{r, size="footnotesize"}
-n_TN <- tree1_test_confmtrx[1,1]
-n_FN <- tree1_test_confmtrx[1,2]
-n_FP <- tree1_test_confmtrx[2,1]
-n_TP <- tree1_test_confmtrx[2,2]
+n_TN <- tree1_test_confusion_matrix[1,1]
+n_FN <- tree1_test_confusion_matrix[1,2]
+n_FP <- tree1_test_confusion_matrix[2,1]
+n_TP <- tree1_test_confusion_matrix[2,2]
 # accuracy
-(n_TP+n_TN)/sum(tree1_test_confmtrx)
+(n_TP+n_TN)/sum(tree1_test_confusion_matrix)
 # precision
 (n_TP)/(n_TP+n_FP)
 # sensitivity/recall: TPR = 1-FPR
@@ -903,12 +964,12 @@ n_TP <- tree1_test_confmtrx[2,2]
 ::::column
 
 ```{r, size="footnotesize"}
-n_TN <- tree2_test_confmtrx[1,1]
-n_FN <- tree2_test_confmtrx[1,2]
-n_FP <- tree2_test_confmtrx[2,1]
-n_TP <- tree2_test_confmtrx[2,2]
+n_TN <- tree2_test_confusion_matrix[1,1]
+n_FN <- tree2_test_confusion_matrix[1,2]
+n_FP <- tree2_test_confusion_matrix[2,1]
+n_TP <- tree2_test_confusion_matrix[2,2]
 # accuracy
-(n_TP+n_TN)/sum(tree2_test_confmtrx)
+(n_TP+n_TN)/sum(tree2_test_confusion_matrix)
 # precision
 (n_TP)/(n_TP+n_FP)
 # sensitivity/recall: TPR = 1-FPR
@@ -1006,7 +1067,7 @@ tree2_test_pred %>% head(3)
 ```
 
 \vspace{-2in}
-$\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$FPR: 8%
+$\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$FNR: 8%
 
 $\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$TPR: 24%
 
@@ -1026,12 +1087,12 @@ table(`y-hat`=threshold_70$prediction,
        ` observed y`=test$SleepTrouble)
 ```
 \vspace{-2in}
-$\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$FPR: 25%
+$\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$FNR: 25%
 
 $\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$TPR: 38%
 
 \vspace{1.15in}
-$\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$FPR: 5%
+$\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$FNR: 5%
 
 $\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad$TPR: 17%
 
