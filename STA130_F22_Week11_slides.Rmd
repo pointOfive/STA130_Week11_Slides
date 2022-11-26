@@ -574,16 +574,16 @@ This depends on the costs and benefits of the intervention/failure to intervene
 \vspace{.25in}
 
 - **Sensitivity/Recall** is also called the **True Positive Rate (TPR)**
-  - The **FALSE Positive Rate (FPR)** is 1-TPR
+  - The **FALSE Negative Rate (FNR)** is 1-TPR
   
-    FPR tells you the proportion of positives that are missed
+    FNR tells you the proportion of negatives that are missed
 
 \vspace{.25in}
 
 - **Specificity** is also called the **True Negative Rate (TNR)**
-  - The **FALSE Negative Rate (FNR)** is 1-TNR
+  - The **FALSE Positive Rate (FPR)** is 1-TNR
 
-    FNR tells you the proportion of negatives that are missed
+    FPR tells you the proportion of positives that are missed
 
 \vspace{.25in}
 
@@ -801,9 +801,9 @@ n_TP <- train_confusion_matrix[2,2]
 (n_TP+n_TN)/sum(train_confusion_matrix)
 # precision
 (n_TP)/(n_TP+n_FP)
-# sensitivity/recall: TPR = 1-FPR
+# sensitivity/recall: TPR = 1-FNR
 (n_TP)/(n_TP+n_FN)
-# specificity: TNR = 1-FNR
+# specificity: TNR = 1-FPR
 (n_TN)/(n_TN+n_FP)
 ```
 
@@ -819,9 +819,9 @@ n_TP <- test_confusion_matrix[2,2]
 (n_TP+n_TN)/sum(test_confusion_matrix)
 # precision
 (n_TP)/(n_TP+n_FP)
-# sensitivity/recall: TPR = 1-FPR
+# sensitivity/recall: TPR = 1-FNR
 (n_TP)/(n_TP+n_FN)
-# specificity: TNR = 1-FNR
+# specificity: TNR = 1-FPR
 (n_TN)/(n_TN+n_FP)
 ```
 
@@ -954,9 +954,9 @@ n_TP <- tree1_test_confusion_matrix[2,2]
 (n_TP+n_TN)/sum(tree1_test_confusion_matrix)
 # precision
 (n_TP)/(n_TP+n_FP)
-# sensitivity/recall: TPR = 1-FPR
+# sensitivity/recall: TPR = 1-FNR
 (n_TP)/(n_TP+n_FN)
-# specificity: TNR = 1-FNR
+# specificity: TNR = 1-FPR
 (n_TN)/(n_TN+n_FP)
 ```
 
@@ -972,9 +972,9 @@ n_TP <- tree2_test_confusion_matrix[2,2]
 (n_TP+n_TN)/sum(tree2_test_confusion_matrix)
 # precision
 (n_TP)/(n_TP+n_FP)
-# sensitivity/recall: TPR = 1-FPR
+# sensitivity/recall: TPR = 1-FNR
 (n_TP)/(n_TP+n_FN)
-# specificity: TNR = 1-FNR
+# specificity: TNR = 1-FPR
 (n_TN)/(n_TN+n_FP)
 ```
 
@@ -987,10 +987,10 @@ Which of the two models above do we prefer? \color{gray}[Use generalizability on
 
 ### How to choose between models: Rationale 1
 
-- If a FP is costly, then low FPR (high sensitivity/recall) is important
-  - sensitivity/recall = TPR = 1-FPR
-- If a FN is costly, then low FNR (high specificity) is important
-  - specificity = TNR = 1-TNR
+- If a FP is costly, then low FPR (high TNR, since FPR=1-TNR) is important
+  - So high specificity = TNR = 1-FPR is important
+- If a FN is costly, then low FNR (high TPR, since FNR=1-TPR) is important
+  - So high sensitivity/recall = TPR = 1-FNR is important
 - Accuracy is a weighted average of sensitivity/recall and specificity
   - sensitivity/recall gets more weight if positive outcomes are more prevalent
   - specificity gets more weight if negative outcomes are more prevalent
