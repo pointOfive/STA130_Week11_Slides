@@ -2,7 +2,7 @@
 title: 'Week 11: Binary Classification Decision Trees'
 subtitle: 'Predicting Classes rather than Numeric Values'
 author: "Scott Schwartz"
-date: "May 18, 2021"
+date: "Nov 21, 2022"
 output:
   beamer_presentation:
     theme: Pittsburgh
